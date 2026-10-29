@@ -1,8 +1,8 @@
 // オフライン対応：アプリ本体はキャッシュ優先、更新はバックグラウンドで取得
-const CACHE = "abx-sukima-v5";
+const CACHE = "abx-sukima-v6";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest",
-  "./icons/icon.svg", "./icons/icon-192.png", "./icons/icon-512.png",
-  "./icons/maskable-512.png", "./icons/apple-touch-icon.png"];
+  "./icon.svg", "./icon-192.png", "./icon-512.png",
+  "./maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
