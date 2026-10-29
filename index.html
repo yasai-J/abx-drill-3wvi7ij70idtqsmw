@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>抗菌薬スキマ演習</title>
+<meta name="description" content="抗菌化学療法認定薬剤師の試験対策。5問3分で解ける演習とスペクトル早見表。">
+<meta name="theme-color" content="#4b3a8f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="スキマ演習">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-size:14px}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: 片手で操作する一列のカード。上に進捗、下に固定の回答ボタン。グラム染色の紫と赤を意味色に */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --ink:#1d2421; --muted:#5f6b66; --line:#d9dfdc;
+  --accent:#4b3a8f; --accent-soft:#e9e5f6; --ok:#1f7a55; --ok-soft:#e1f2ea; --ng:#b8323f; --ng-soft:#f8e3e5; --warn:#8a6100; --warn-soft:#fbf0d4;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141917; --surface:#1d2421; --ink:#e7ecea; --muted:#9aa7a1; --line:#2f3935;
+  --accent:#a998f0; --accent-soft:#2c2645; --ok:#5fcf9c; --ok-soft:#183328; --ng:#f07a86; --ng-soft:#3a1d21; --warn:#e8bf5a; --warn-soft:#3a3018; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1d2421; --ink:#e7ecea; --muted:#9aa7a1; --line:#2f3935;
+  --accent:#a998f0; --accent-soft:#2c2645; --ok:#5fcf9c; --ok-soft:#183328; --ng:#f07a86; --ng-soft:#3a1d21; --warn:#e8bf5a; --warn-soft:#3a3018; color-scheme:dark}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 120px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1{font-size:1.35rem;margin:0;text-wrap:balance;letter-spacing:.02em}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* home */
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.stats{display:flex;gap:18px}
+.stat b{display:block;font-family:var(--f-mono);font-size:1.3rem;line-height:1.2}
+.stat span{font-size:.72rem;color:var(--muted)}
+.starts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.btn small{color:var(--muted);font-size:.78rem}
+.btn.primary{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:#fff;padding:18px}
+:root[data-theme="dark"] .btn.primary{color:#141917}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#141917}}
+.btn.primary small{color:inherit;opacity:.8}
+.btn.primary strong{font-size:1.15rem}
+.btn:disabled{opacity:.45;cursor:default}
+.cats{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.cat{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:12px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left}
+.cat .nm{font-weight:700;font-size:.95rem}
+.cat .ct{font-size:.78rem;color:var(--muted)}
+.bar{grid-column:1/-1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.sec-t{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 6px}
+.sec-t h2{font-size:.95rem;margin:0}
+.link{border:0;background:none;color:var(--muted);font-size:.8rem;text-decoration:underline;padding:4px}
+.confirm{margin-top:10px;padding:12px;border-radius:10px;background:var(--ng-soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.85rem}
+.confirm button{border:1px solid var(--ng);background:none;color:var(--ng);border-radius:8px;padding:4px 12px}
+.note{font-size:.75rem;color:var(--muted);margin-top:24px}
+
+/* quiz */
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.qtop .x{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:.85rem}
+.prog{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:.75rem;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 10px;font-weight:700}
+.qtext{font-size:1.05rem;font-weight:700;margin:12px 0 6px;line-height:1.75}
+.req{font-size:.85rem;color:var(--muted);margin-bottom:14px}
+.req b{color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:grid;grid-template-columns:28px 1fr 20px;gap:10px;align-items:start;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px}
+.opt .lt{font-family:var(--f-mono);font-weight:600;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.85rem}
+.opt .mk{font-weight:700;font-size:1rem;text-align:center}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .lt{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .lt{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.wrong{border-color:var(--ng);background:var(--ng-soft)}
+.opt.wrong .lt{background:var(--ng);border-color:var(--ng);color:var(--surface)}
+.opt.right .mk{color:var(--ok)} .opt.wrong .mk{color:var(--ng)}
+.opt:disabled{cursor:default}
+.fb{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.fb .v{font-weight:700;font-size:1.05rem;margin-bottom:4px}
+.fb .v.ok{color:var(--ok)} .fb .v.ng{color:var(--ng)}
+.fb p{margin:6px 0 0;font-size:.92rem}
+.dock{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.dock .in{max-width:640px;margin:0 auto}
+.go{width:100%;border:0;border-radius:12px;padding:15px;background:var(--accent);color:var(--surface);font-weight:700;font-size:1rem}
+.go:disabled{opacity:.4;cursor:default}
+
+/* result */
+.score{display:flex;align-items:baseline;gap:8px;margin:10px 0 4px}
+.score b{font-family:var(--f-mono);font-size:3rem;line-height:1}
+.score span{color:var(--muted)}
+.rlist{list-style:none;padding:0;margin:18px 0;border-top:1px solid var(--line)}
+.rlist li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:.88rem}
+.rlist .ok{color:var(--ok);font-weight:700} .rlist .ng{color:var(--ng);font-weight:700}
+.rlist small{display:block;color:var(--muted);font-size:.72rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row .btn{flex:1;min-width:140px;align-items:center;text-align:center}
+/* reference */
+.tabs{display:flex;gap:6px;margin:4px 0 14px}
+.tabs button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;margin-right:4px;font-weight:700}
+.mo{background:var(--ok-soft);color:var(--ok)} .mt{background:var(--warn-soft);color:var(--warn)} .mx{color:var(--muted)}
+.mask-t{display:flex;align-items:center;gap:8px;font-size:.88rem;margin:6px 0 10px;cursor:pointer}
+.mask-t input{width:18px;height:18px;accent-color:var(--accent)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table.spec{border-collapse:separate;border-spacing:0;font-size:.8rem;min-width:570px}
+.spec th,.spec td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:center}
+.spec thead th{font-size:.66rem;line-height:1.3;color:var(--muted);font-weight:700;vertical-align:bottom;min-width:50px}
+.spec tbody th{position:sticky;left:0;background:var(--surface);text-align:left;padding:6px 8px;font-weight:700;width:112px;min-width:112px;max-width:112px;font-size:.74rem;line-height:1.35;border-right:1px solid var(--line);z-index:1}
+.spec tbody th small{display:block;font-weight:400;color:var(--muted);font-size:.66rem}
+.spec thead th:first-child{position:sticky;left:0;background:var(--surface);z-index:2}
+.spec tr.grp td,.spec tr.grp th{background:var(--accent-soft);color:var(--accent);font-size:.7rem;letter-spacing:.08em;text-align:left;padding:4px 8px}
+.spec td.c{font-weight:700;font-size:.95rem;cursor:default}
+.spec td.masked{background:var(--bg);color:transparent;cursor:pointer}
+.spec td.masked::after{content:"?";color:var(--muted);font-weight:400}
+.spec td.masked.c{position:relative}
+.inf{display:flex;flex-direction:column;gap:10px}
+.inf-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.inf-card h3{margin:0;font-size:.98rem}
+.inf-card .k{font-size:.7rem;color:var(--muted);letter-spacing:.06em;margin-right:6px}
+.inf-card .rx{font-weight:700;color:var(--accent)}
+.inf-card .pt{font-size:.82rem;color:var(--muted)}
+.inf-card.hide .rx span:last-child{background:var(--accent-soft);color:transparent;border-radius:4px;cursor:pointer}
+.spec-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.btn.alt{background:var(--accent-soft);border-color:var(--accent)}
+.btn.alt strong{color:var(--accent)}
+.brand{display:flex;gap:12px;align-items:center}
+.brand img{border-radius:12px;flex:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <!-- HOME -->
+  <section id="home">
+    <div class="head">
+      <div class="brand"><img src="icons/icon.svg" alt="" width="52" height="52"><div>
+        <div class="eyebrow">抗菌化学療法認定薬剤師 試験対策</div>
+        <h1>抗菌薬スキマ演習</h1>
+      </div></div>
+      <div class="stats">
+        <div class="stat"><b id="sToday">0</b><span>今日の解答</span></div>
+        <div class="stat"><b id="sAcc">–</b><span>正答率</span></div>
+        <div class="stat"><b id="sSeen">0</b><span>/<span id="sTotal">0</span> 問</span></div>
+      </div>
+    </div>
+    <div class="starts">
+      <button class="btn primary" id="go5"><strong>5問だけ解く</strong><small>約3分 · 未解答と苦手を優先して出題</small></button>
+      <button class="btn" id="go10"><strong>10問</strong><small>約6分</small></button>
+      <button class="btn" id="goWeak"><strong>苦手復習</strong><small id="weakN">0問</small></button>
+    </div>
+    <div class="sec-t"><h2>弱点強化：スペクトル</h2></div>
+    <div class="starts">
+      <button class="btn alt" id="goSpec"><strong>スペクトル特訓</strong><small>薬×菌・感染症×薬を5問</small></button>
+      <button class="btn alt" id="goRef"><strong>早見表</strong><small>表を見る・隠して暗記</small></button>
+    </div>
+    <div class="sec-t"><h2>領域から選ぶ</h2><span class="eyebrow">正答率</span></div>
+    <div class="cats" id="cats"></div>
+    <div style="margin-top:14px;text-align:right">
+      <button class="link" id="resetBtn">学習記録をリセット</button>
+    </div>
+    <div class="confirm" id="resetBox" hidden>記録をすべて消去しますか？
+      <button id="resetYes">消去する</button><button id="resetNo" style="border-color:var(--muted);color:var(--muted)">やめる</button>
+    </div>
+    <p class="note">問題はオリジナル作成です。出題形式は認定試験に合わせ「5肢から正しいものを2つ選ぶ」形式が中心。最新のガイドライン改訂は必ず原典で確認してください。記録はこの端末のブラウザにのみ保存されます。</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" hidden>
+    <div class="qtop">
+      <button class="x" id="quit">✕ 終了</button>
+      <div class="prog"><i id="progBar"></i></div>
+      <span class="mono" id="progTxt">1/5</span>
+    </div>
+    <span class="tag" id="qTag"></span>
+    <div class="qtext" id="qText"></div>
+    <div class="req" id="qReq"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb" hidden></div>
+  </section>
+
+  <!-- REFERENCE -->
+  <section id="ref" hidden>
+    <div class="qtop"><button class="x" id="refBack">← ホーム</button><span class="eyebrow">スペクトル早見表</span></div>
+    <div class="tabs"><button id="tabSpec" class="on">抗菌薬 × 菌</button><button id="tabInf">感染症 × 第一選択</button></div>
+    <div id="pSpec">
+      <div class="legend"><span><b class="mo">○</b>有効</span><span><b class="mt">△</b>一部有効・耐性が多い・主役ではない</span><span><b class="mx">×</b>無効</span></div>
+      <label class="mask-t" for="maskChk"><input type="checkbox" id="maskChk">隠して暗記（マスをタップでめくる）</label>
+      <div class="tbl-wrap"><table class="spec" id="specT"></table></div>
+      <p class="note" style="margin-top:10px">表は横にスクロールできます。○△×は学習用の大まかな目安です。実際の選択は施設のアンチバイオグラムと感受性結果で判断します。</p>
+    </div>
+    <div id="pInf" hidden>
+      <label class="mask-t" for="maskInf"><input type="checkbox" id="maskInf">治療薬を隠して暗記（タップでめくる）</label>
+      <div class="inf" id="infList"></div>
+      <p class="note">代表的な経験的治療の一例です。重症度、耐性菌リスク、アレルギー、施設の感受性データで変わります。</p>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" hidden>
+    <div class="eyebrow">結果</div>
+    <div class="score"><b id="rScore">0</b><span id="rOf">/ 5 問正解</span></div>
+    <div id="rMsg" style="color:var(--muted);font-size:.9rem"></div>
+    <ul class="rlist" id="rList"></ul>
+    <div class="row">
+      <button class="btn" id="rAgain"><strong>もう5問</strong></button>
+      <button class="btn" id="rWeak"><strong>間違いを復習</strong></button>
+      <button class="btn" id="rHome"><strong>ホーム</strong></button>
+    </div>
+  </section>
+</div>
+
+<div class="dock" id="dock" hidden><div class="in"><button class="go" id="goBtn" disabled>回答する</button></div></div>
+
+<script>
+const CATS=["PK/PD・TDM","耐性菌・MRSA","呼吸器・尿路","中枢・血流・敗血症","皮膚・骨・腹腔","真菌・ウイルス・結核","性感染症","相互作用・副作用・特殊集団","適正使用・感染対策","スペクトル基礎","感染症別の第一選択"];
+const Q=[
+// PK/PD・TDM
+{c:0,q:"効果が主に%T>MIC（time above MIC）と相関する抗菌薬はどれか。",o:["メロペネム","ゲンタマイシン","セファゾリン","レボフロキサシン","ダプトマイシン"],a:[0,2],e:"β-ラクタム系（カルバペネム、セフェム、ペニシリン）は時間依存性で%T>MICが指標。アミノグリコシド系・ダプトマイシンはCmax/MIC（濃度依存性）、キノロン系はAUC/MICまたはCmax/MICが指標。"},
+{c:0,q:"アミノグリコシド系薬を1日1回投与する根拠として正しいものはどれか。",o:["グラム陰性桿菌に対してPAE（postantibiotic effect）を有する","時間依存性に殺菌作用を示す","Cmax/MICが効果の指標となる","トラフ値を高く維持するほど効果が上がる","主に肝代謝で消失する"],a:[0,2],e:"濃度依存性の殺菌作用とPAEにより、1回量を大きくして投与間隔を空ける方が効果的。トラフ値の上昇は腎毒性・耳毒性のリスクとなる。主に腎排泄。"},
+{c:0,q:"バンコマイシン（MRSA感染症）のTDMについて正しいものはどれか。",o:["初回は25〜30 mg/kgの負荷投与を考慮する","目標AUCは400〜600 μg·h/mLが推奨される","主に肝臓で代謝されるため肝機能で用量を調節する","目標AUCは800 μg·h/mL以上である","ピーク値のみで投与設計を行う"],a:[0,1],e:"国内のTDMガイドライン（2022）ではAUCガイドの投与設計が推奨され、初期目標AUCは400〜600。早期に目標濃度へ到達させるため負荷投与を考慮する。腎排泄型。"},
+{c:0,q:"テイコプラニンについて正しいものはどれか。",o:["半減期が長いため負荷投与が必要である","通常のトラフ目標値は15〜30 μg/mLである","タンパク結合率が低い（約10%）","TDMはAUCガイドが標準である","腎機能低下時も用量調節は不要である"],a:[0,1],e:"半減期が非常に長く、定常状態到達が遅いため初期に負荷投与を行う。タンパク結合率は約90%と高い。重症・複雑性感染症ではトラフ20 μg/mL以上を目標とする。腎排泄型のため腎機能で調節する。"},
+{c:0,q:"アミノグリコシド系薬の副作用・TDMについて正しいものはどれか。",o:["ゲンタマイシンのトラフ値は1 μg/mL未満を目標とする","ピーク/MIC 8〜10以上を目標とする","腎障害は不可逆的であることが多い","耳毒性は可逆的であることが多い","トラフ値は投与終了直後に採血する"],a:[0,1],e:"腎障害は中止で回復することが多いが、耳毒性（聴覚・前庭）は不可逆的になりやすい。トラフは次回投与直前、ピークは点滴終了30分〜1時間後に採血する。"},
+{c:0,q:"ボリコナゾールについて正しいものはどれか。",o:["CYP2C19遺伝子多型の影響を受ける","トラフ値は1〜4 μg/mL程度を目安とする","線形の薬物動態を示す","腎機能低下時は経口剤の減量が必要である","効果判定はピーク値で行う"],a:[0,1],e:"非線形の薬物動態を示し、CYP2C19のpoor metabolizerでは血中濃度が上昇しやすい。トラフ1以上で有効性、4程度以上で肝障害・視覚障害等の副作用が増える。静注剤の添加物（SBECD）は腎機能低下時に注意するが、経口剤は腎機能で調節しない。"},
+{c:0,q:"68歳男性、体重67 kg、血清クレアチニン0.74 mg/dL。Cockcroft-Gault式によるクレアチニンクリアランスに最も近いのはどれか。1つ選べ。",o:["約45 mL/min","約65 mL/min","約77 mL/min","約91 mL/min","約110 mL/min"],a:[3],e:"Ccr＝(140−年齢)×体重／(72×Scr)＝(140−68)×67／(72×0.74)≒90.5 mL/min。女性ではさらに×0.85（この患者が女性なら約77）。"},
+{c:0,q:"腎機能良好（Ccr約90 mL/min）な腹膜炎患者にSBT/ABPC 3 g×2回/日を投与中、CRPが上昇。バイタルは安定し、培養はE. faecalisのみ。最も適切な提案はどれか。1つ選べ。",o:["SBT/ABPCを3 g×4回/日に増量する","1回6 gに増やし1日2回のまま投与する","直ちにメロペネムへ変更する","バンコマイシンを追加する","SBT/ABPCを1.5 g×2回/日に減量する"],a:[0],e:"SBT/ABPCは時間依存性（%T>MIC）で腎排泄型。腎機能が良好な患者では1日2回では不足しやすく、投与回数を増やす。原因菌がE. faecalis（ABPC感受性が多い）で全身状態が安定していれば、安易な広域化は不要。"},
+// 耐性菌・MRSA
+{c:1,q:"抗MRSA薬について正しいものはどれか。",o:["ダプトマイシンは肺サーファクタントで不活化されるため肺炎に用いない","リネゾリドは長期投与で血小板減少を起こしやすい","ダプトマイシンはCK上昇を起こさない","リネゾリドは腎機能に応じた減量が必須である","テイコプラニンはバンコマイシンより腎障害が多い"],a:[0,1],e:"ダプトマイシンはCK上昇（横紋筋障害）に注意し、週1回程度CKを測定する。リネゾリドは腎機能による用量調節不要で、14日を超える投与で骨髄抑制が増える。テイコプラニンはバンコマイシンより腎障害が少ないとされる。"},
+{c:1,q:"黄色ブドウ球菌菌血症の管理について正しいものはどれか。",o:["陰性化確認のためフォローアップ血液培養を行う","心エコーで感染性心内膜炎を評価する","カテーテル関連の場合もカテーテル温存が原則である","合併症がなくても治療期間は7日で十分である","MSSAでもバンコマイシンが第一選択である"],a:[0,1],e:"S. aureus菌血症では血培陰性化の確認、心エコー、感染巣（カテーテル等）の除去が必須。非複雑性でも陰性化から少なくとも14日間。MSSAにはセファゾリン等のβ-ラクタムがバンコマイシンより優れる。"},
+{c:1,q:"ESBL産生大腸菌について正しいものはどれか。",o:["セファマイシン系（セフメタゾール）は治療選択肢となり得る","重症例ではカルバペネム系が推奨される","第3世代セフェム系で確実に治療できる","ESBLはクラブラン酸で阻害されない","ESBL遺伝子は染色体上にあり菌種間で伝播しない"],a:[0,1],e:"ESBLは第3世代セフェムを分解するが、セファマイシン系やカルバペネム系には安定。クラブラン酸などのβ-ラクタマーゼ阻害薬で阻害される点がAmpCとの違い。多くはプラスミド性で伝播する。"},
+{c:1,q:"AmpC型β-ラクタマーゼについて正しいものはどれか。",o:["Enterobacter属は染色体性AmpCを有する","セフェピムはAmpCに比較的安定である","クラブラン酸で阻害される","カルバペネムを効率よく分解する","AmpC産生菌には第3世代セフェムが最適である"],a:[0,1],e:"Enterobacter属、Citrobacter freundii、Serratia属などは染色体性AmpCを持ち、第3世代セフェム投与中に脱抑制変異株が選択されやすい。クラブラン酸では阻害されない。"},
+{c:1,q:"カルバペネム耐性腸内細菌目細菌（CRE）について正しいものはどれか。",o:["国内ではIMP型メタロβ-ラクタマーゼ産生株が多い","セフタジジム/アビバクタムはメタロβ-ラクタマーゼ単独産生株には無効である","国内ではKPC型が最も多い","感染症法では5類定点把握疾患である","メタロβ-ラクタマーゼはアビバクタムで阻害される"],a:[0,1],e:"国内のカルバペネマーゼはIMP型が主体。アビバクタムはKPC・OXA-48等を阻害するがメタロβ-ラクタマーゼは阻害しない。CRE感染症は5類全数把握疾患。"},
+{c:1,q:"バンコマイシン耐性腸球菌（VRE）について正しいものはどれか。",o:["VanB型はテイコプラニン感受性を示す","リネゾリドは治療選択肢となる","VanA型はテイコプラニン感受性を示す","E. faecalisに比べE. faeciumでは頻度が低い","保菌者は全例で除菌治療を行う"],a:[0,1],e:"VanA型はバンコマイシン・テイコプラニン両方に耐性、VanB型はバンコマイシンのみ耐性。VREの多くはE. faecium。治療はリネゾリドやダプトマイシン。保菌のみなら治療せず接触予防策で対応する。"},
+{c:1,q:"緑膿菌について正しいものはどれか。",o:["多剤耐性緑膿菌（MDRP）はカルバペネム・アミカシン・キノロンの3系統に耐性を示す","セフトリアキソンは緑膿菌に無効である","スルバクタム/アンピシリンが有効である","セフェピムは緑膿菌に無効である","アズトレオナムは緑膿菌に無効である"],a:[0,1],e:"抗緑膿菌活性をもつのはTAZ/PIPC、CAZ、CFPM、カルバペネム（ERPM除く）、AZT、キノロン、アミノグリコシドなど。CTRXやSBT/ABPCは無効。"},
+// 呼吸器・尿路
+{c:2,q:"マイコプラズマ肺炎について正しいものはどれか。",o:["β-ラクタム系薬は無効である","マクロライド耐性株にはテトラサイクリン系やキノロン系を用いる","グラム染色で容易に確認できる","高齢者に多い","尿中抗原検査で診断する"],a:[0,1],e:"細胞壁をもたないためβ-ラクタム系は無効で、グラム染色でも染まらない。若年者に多い。8歳未満の小児ではテトラサイクリン系の歯牙着色に注意する。"},
+{c:2,q:"レジオネラ肺炎について正しいものはどれか。",o:["尿中抗原検査は主に血清群1を検出する","治療はキノロン系またはマクロライド系が中心である","通常の血液寒天培地で容易に発育する","ヒト-ヒト感染が主な感染経路である","β-ラクタム系薬が有効である"],a:[0,1],e:"尿中抗原は血清群1以外では偽陰性になり得る。培養にはBCYE-α培地が必要。感染経路は汚染水のエアロゾル吸入で、ヒト-ヒト感染は基本的にない。細胞内寄生菌のためβ-ラクタムは無効。"},
+{c:2,q:"誤嚥性肺炎について正しいものはどれか。",o:["スルバクタム/アンピシリンが選択肢となる","嫌気性菌を含む口腔内常在菌が関与する","全例でカルバペネム系が第一選択である","予防に口腔ケアは無効である","原因菌はほとんどが緑膿菌である"],a:[0,1],e:"口腔レンサ球菌や嫌気性菌が主体。耐性菌リスクがなければSBT/ABPCなど。口腔ケアや嚥下評価が再発予防に重要。"},
+{c:2,q:"尿路感染症について正しいものはどれか。",o:["妊婦の無症候性細菌尿は治療対象である","単純性膀胱炎の原因菌は大腸菌が最多である","高齢者の無症候性細菌尿は全例治療する","モキシフロキサシンは尿路移行に優れる","ESBL産生菌にはセフトリアキソンが第一選択である"],a:[0,1],e:"無症候性細菌尿の治療対象は妊婦と、出血を伴う泌尿器科処置前など。モキシフロキサシンは尿中排泄率が低く尿路感染症には不向き。"},
+// 中枢・血流・敗血症
+{c:3,q:"成人の細菌性髄膜炎の初期治療について正しいものはどれか。",o:["50歳以上ではリステリアを考慮しアンピシリンを追加する","デキサメタゾンは抗菌薬の投与前または同時に開始する","セファゾリンは髄液移行が良好である","腰椎穿刺の結果を待ってから抗菌薬を開始する","リステリアにはセフェム系が有効である"],a:[0,1],e:"経験的治療はCTRX（またはCTX）＋VCMが基本で、50歳以上や免疫不全ではABPCを追加。リステリアはセフェム系に自然耐性。抗菌薬開始を遅らせてはならない。"},
+{c:3,q:"敗血症の初期対応について正しいものはどれか。",o:["抗菌薬投与前に血液培養を2セット以上採取する","敗血症性ショックでは認識後1時間以内を目標に抗菌薬を投与する","血液培養は1セットで十分である","初期は狭域抗菌薬で開始し、培養結果を見て広域化する","β-ラクタム系の投与時間を延長する方法は検討されない"],a:[0,1],e:"初期は想定菌を十分カバーする広域治療で開始し、培養結果でde-escalationする。β-ラクタムの持続・延長投与も選択肢として扱われる（J-SSCG 2024）。"},
+{c:3,q:"発熱性好中球減少症（FN）について正しいものはどれか。",o:["初期治療は抗緑膿菌活性をもつβ-ラクタム単剤が基本である","好中球数500/μL未満、または48時間以内に500/μL未満が予測される状態を指す","全例で初期から抗MRSA薬の併用が必須である","セフトリアキソン単剤が標準治療である","MASCCスコアが低いほど低リスクである"],a:[0,1],e:"CFPM、TAZ/PIPC、MEPMなどが選択肢。抗MRSA薬はカテーテル感染疑い、血行動態不安定などの場合に追加。MASCCスコアは21点以上が低リスク（高いほど低リスク）。"},
+{c:3,q:"感染性心内膜炎について正しいものはどれか。",o:["E. faecalisにはアンピシリン＋セフトリアキソン併用が選択肢となる","血液培養は抗菌薬投与前に3セット以上採取する","経胸壁心エコーで疣贅がなければ除外できる","人工弁の心内膜炎は自然弁より治療期間が短い","MSSAにはクリンダマイシン単剤で治療する"],a:[0,1],e:"経胸壁心エコーの感度は限られ、疑いが強ければ経食道心エコーを行う。人工弁IEは6週間以上と長期。MSSAにはCEZや抗ブドウ球菌ペニシリンを用いる。"},
+// 皮膚・骨・腹腔
+{c:4,q:"壊死性筋膜炎について正しいものはどれか。",o:["緊急の外科的デブリドマンが必要である","A群溶連菌ではクリンダマイシン併用で毒素産生抑制を図る","抗菌薬のみで治癒することが多い","皮膚所見に比べて疼痛は軽いことが多い","CRP値のみで診断が確定する"],a:[0,1],e:"皮膚所見に不釣り合いな強い疼痛が特徴。治療の基本は早期の外科的処置と広域抗菌薬。A群溶連菌ではPCG＋CLDM（タンパク合成阻害による毒素抑制）。"},
+{c:4,q:"犬・猫咬傷について正しいものはどれか。",o:["アモキシシリン/クラブラン酸が第一選択である","Pasteurella multocidaが代表的な原因菌である","セファレキシンでPasteurellaを確実にカバーできる","破傷風の予防は不要である","猫咬傷は犬咬傷より感染リスクが低い"],a:[0,1],e:"第1世代セフェムやCLDMはPasteurellaへの活性が弱い。猫咬傷は深い刺創になりやすく感染リスクが高い。破傷風トキソイド接種歴の確認が必要。脾摘患者の犬咬傷ではCapnocytophagaに注意。"},
+{c:4,q:"つつが虫病・日本紅斑熱について正しいものはどれか。",o:["テトラサイクリン系が第一選択である","β-ラクタム系薬は無効である","刺し口（痂皮）は通常みられない","原因微生物はウイルスである","治療は確定診断を待ってから開始する"],a:[0,1],e:"リケッチア（細胞内寄生菌）による感染症。刺し口の黒色痂皮が診断の手がかり。重症化しうるため疑った時点でミノサイクリン等を開始する。日本紅斑熱の重症例ではキノロン併用も検討される。"},
+{c:4,q:"化膿性関節炎・骨髄炎について正しいものはどれか。",o:["化膿性関節炎の原因菌は黄色ブドウ球菌が最多である","骨髄炎の治療期間は通常6週間程度である","淋菌性関節炎は高齢者に多い","診断に関節穿刺は不要である","経口抗菌薬は一切使用できない"],a:[0,1],e:"関節穿刺による関節液のグラム染色・培養が診断の要。淋菌性関節炎は性的活動性の高い若年者に多い。バイオアベイラビリティの高い経口薬への切り替えも行われる。"},
+{c:4,q:"二次性腹膜炎など腹腔内感染症について正しいものはどれか。",o:["Bacteroides fragilisのクリンダマイシン耐性率は高い","メトロニダゾールは嫌気性菌に有効である","セフメタゾールでE. faecalisもカバーできる","ドレナージは不要である","セフトリアキソン単剤で嫌気性菌もカバーできる"],a:[0,1],e:"B. fragilisはCLDM耐性が多く、腹腔内感染では推奨されない。セフェム系は腸球菌に無効。感染源コントロール（ドレナージ・手術）が治療の基本。"},
+{c:4,q:"Clostridioides difficile感染症（CDI）について正しいものはどれか。",o:["芽胞にはアルコール手指消毒が無効で、流水と石けんで手洗いする","初発例ではバンコマイシン経口またはフィダキソマイシンを用いる","バンコマイシン点滴静注が有効である","下痢のない保菌者も治療する","プロトンポンプ阻害薬はリスク因子ではない"],a:[0,1],e:"VCMは静注では腸管内に移行しないため経口で用いる。無症候性保菌者は治療しない。PPIや抗菌薬曝露はCDIのリスク因子。"},
+{c:4,q:"H. pylori除菌療法（国内）について正しいものはどれか。",o:["一次除菌は酸分泌抑制薬＋アモキシシリン＋クラリスロマイシンである","二次除菌はクラリスロマイシンをメトロニダゾールに変更する","一次除菌でメトロニダゾールを用いるのが標準である","除菌判定は除菌終了直後に行う","ボノプラザンは除菌療法に使用できない"],a:[0,1],e:"PPIまたはボノプラザン（P-CAB）とAMPC、CAMの3剤7日間。除菌判定は終了後4週以降に尿素呼気試験などで行う。"},
+// 真菌・ウイルス・結核
+{c:5,q:"カンジダ血症について正しいものはどれか。",o:["眼科診察で眼内炎を評価する","血液培養陰性化と症状改善から14日間治療する","Candida kruseiはフルコナゾール感受性である","中心静脈カテーテルは原則温存する","エキノキャンディン系は眼内・髄液移行が良好である"],a:[0,1],e:"C. kruseiはFLCZに自然耐性、C. glabrataは低感受性が多い。CVCは可能な限り抜去。エキノキャンディンは初期治療の第一選択だが眼内・髄液移行は不良。"},
+{c:5,q:"深在性糸状菌症について正しいものはどれか。",o:["侵襲性アスペルギルス症の第一選択はボリコナゾールである","ムーコル症にボリコナゾールは無効である","アスペルギルスガラクトマンナン抗原はカンジダ症の診断に用いる","フルコナゾールはアスペルギルスに有効である","リポソーマルアムホテリシンBは腎障害を起こさない"],a:[0,1],e:"ムーコル症にはL-AMB（またはイサブコナゾール等）を用いる。FLCZは糸状菌に無効。L-AMBは従来製剤より軽減されたが腎障害・低K血症に注意。"},
+{c:5,q:"ニューモシスチス肺炎（PCP）について正しいものはどれか。",o:["治療の第一選択はST合剤である","HIV患者でPaO2<70 mmHgの場合はステロイド併用が推奨される","β-D-グルカンは上昇しない","ST合剤は高カリウム血症を起こさない","培養で容易に分離できる"],a:[0,1],e:"β-D-グルカンは上昇することが多く補助診断に用いる。培養はできずPCRや染色で診断。ST合剤ではトリメトプリムによる高K血症、骨髄抑制、皮疹に注意。"},
+{c:5,q:"帯状疱疹の抗ウイルス薬について正しいものはどれか。",o:["アメナメビルは腎機能による用量調節が不要である","アシクロビルは腎機能低下時に減量しないと精神神経症状を起こしやすい","発症72時間を過ぎてからの開始が推奨される","バラシクロビルはアシクロビルよりバイオアベイラビリティが低い","ファムシクロビルはアシクロビルのプロドラッグである"],a:[0,1],e:"アメナメビルは主に糞中排泄。ACV/VACVは腎排泄型で、腎機能低下や高齢者では脳症に注意。早期（72時間以内）の開始が望ましい。ファムシクロビルはペンシクロビルのプロドラッグ。"},
+{c:5,q:"抗インフルエンザ薬について正しいものはどれか。",o:["バロキサビルは単回経口投与である","ペラミビルは静注製剤である","ザナミビルは経口錠剤である","発症96時間以降の開始が最も効果的である","オセルタミビルは腎機能による用量調節が不要である"],a:[0,1],e:"ザナミビルは吸入薬。発症48時間以内の開始が基本。オセルタミビルは腎排泄型で腎機能低下時は減量する。バロキサビルは耐性変異（I38T等）の出現に注意。"},
+{c:5,q:"抗結核薬について正しいものはどれか。",o:["イソニアジドの末梢神経障害予防にビタミンB6を併用する","エタンブトールは視神経障害を起こす","リファンピシンはCYP3A4を阻害する","ピラジナミドは血清尿酸値を低下させる","標準治療期間は3か月である"],a:[0,1],e:"標準治療はINH・RFP・PZA・EBの2か月＋INH・RFPの4か月（計6か月）。RFPはCYPの強力な誘導薬。PZAは高尿酸血症を起こす。"},
+// 性感染症
+{c:6,q:"梅毒について正しいものはどれか。",o:["早期梅毒ではベンザチンペニシリンG 240万単位の単回筋注が選択肢となる","治療開始後24時間以内に発熱などのJarisch-Herxheimer反応がみられることがある","RPRは治療効果判定に使えない","TP抗体は治療後速やかに陰性化する","神経梅毒でも経口アモキシシリンで十分である"],a:[0,1],e:"治療効果判定にはRPRなど非トレポネーマ検査の定量値の低下を用いる。TP抗体は治療後も陽性が持続しやすい。神経梅毒はPCG大量静注が基本。"},
+{c:6,q:"淋菌感染症について正しいものはどれか。",o:["セフトリアキソン1 gの単回静注が推奨される","クラミジアの合併を考慮する","キノロン系への感受性率は高い","経口セフェム系が第一選択である","咽頭感染は治療不要である"],a:[0,1],e:"淋菌はキノロン耐性率が高く、経口セフェムも耐性化が進んでいる。咽頭感染は無症状でも感染源となるため治療する。クラミジアの同時検査・治療を考慮する。"},
+// 相互作用・副作用・特殊集団
+{c:7,q:"抗菌薬の相互作用について正しいものはどれか。",o:["カルバペネム系はバルプロ酸の血中濃度を低下させる（併用禁忌）","キノロン系はMg・Al含有制酸剤とキレートを形成する","リファンピシンはCYP3A4を阻害する","リネゾリドにはMAO阻害作用がない","テトラサイクリン系は鉄剤と併用しても吸収が低下しない"],a:[0,1],e:"カルバペネムとバルプロ酸の併用では、てんかん発作の再発リスクがある。キノロン系・テトラサイクリン系は金属カチオンでキレートを形成し吸収が低下する。リネゾリドはMAO阻害作用をもち、セロトニン作動薬との併用に注意。"},
+{c:7,q:"抗微生物薬の副作用について正しいものはどれか。",o:["セフトリアキソンはカルシウム含有輸液との配合で沈殿を生じる","ST合剤は高カリウム血症を起こすことがある","メトロニダゾール服用中の飲酒は問題ない","テトラサイクリン系は8歳未満でも歯牙着色を起こさない","アミノグリコシド系は耳毒性を起こさない"],a:[0,1],e:"CTRXは新生児でCa含有製剤との併用が禁忌。メトロニダゾールはジスルフィラム様作用があり飲酒を避ける。長期投与では末梢神経障害にも注意。"},
+{c:7,q:"腎機能低下時に用量調節が通常不要な薬剤はどれか。",o:["セフトリアキソン","リネゾリド","レボフロキサシン","メロペネム","アシクロビル"],a:[0,1],e:"CTRXは胆汁排泄と腎排泄の両経路をもつため通常調節不要。LZDも腎機能で調節しない。LVFX、MEPM、ACVは腎排泄型で減量が必要。"},
+{c:7,q:"妊婦に比較的安全に使用できる抗菌薬はどれか。",o:["アモキシシリン","セファレキシン","ミノサイクリン","レボフロキサシン","ST合剤（妊娠末期）"],a:[0,1],e:"ペニシリン系・セフェム系は妊婦に比較的安全とされる。テトラサイクリン系は胎児の歯牙着色・骨発育、キノロン系は関節障害の懸念、ST合剤は妊娠末期で核黄疸のリスクがある。"},
+// 適正使用・感染対策
+{c:8,q:"急性気道感染症への抗菌薬使用（抗微生物薬適正使用の手引き）について正しいものはどれか。",o:["感冒には抗菌薬を投与しない","A群溶連菌による咽頭炎にはアモキシシリンを10日間投与する","百日咳を除く急性気管支炎には全例マクロライドを投与する","軽症の急性鼻副鼻腔炎は初期からキノロン系を投与する","膿性鼻汁は細菌感染の確実な証拠である"],a:[0,1],e:"感冒、軽症の急性鼻副鼻腔炎、百日咳を除く急性気管支炎には抗菌薬投与を行わないことが推奨される。膿性鼻汁はウイルス感染でもみられる。"},
+{c:8,q:"空気感染予防策が必要な感染症はどれか。",o:["麻疹","結核","インフルエンザ","風疹","ノロウイルス胃腸炎"],a:[0,1],e:"空気感染：結核・麻疹・水痘（播種性帯状疱疹を含む）。飛沫感染：インフルエンザ・風疹・ムンプスなど。ノロウイルスは接触感染（嘔吐物のエアロゾルにも注意）。"},
+{c:8,q:"ノロウイルス対策について正しいものはどれか。",o:["嘔吐物の処理には0.1%次亜塩素酸ナトリウムを用いる","アルコールでは消毒効果が不十分である","空気感染予防策が基本である","症状消失後は便中にウイルスが排泄されない","クロルヘキシジンが有効である"],a:[0,1],e:"エンベロープをもたないためアルコールやクロルヘキシジンの効果は乏しい。症状消失後も1週間以上便中に排泄されることがあり、手洗いの継続が重要。"},
+// ===== 追加分 =====
+// PK/PD・TDM
+{c:0,q:"効果の主なPK/PD指標がAUC/MICである抗菌薬はどれか。",o:["レボフロキサシン","バンコマイシン","セフタジジム","メロペネム","アンピシリン"],a:[0,1],e:"キノロン系とバンコマイシンはAUC/MICが主な指標。セフタジジム・メロペネム・アンピシリンはβ-ラクタム系で、%T>MICが指標となる時間依存性薬。"},
+{c:0,q:"メロペネムの%T>MICを高める投与法として適切なものはどれか。",o:["1日量を変えずに投与回数を増やす","1回あたりの点滴時間を延長する","1日量を1回にまとめて投与する","点滴時間を短縮する","投与間隔を延ばす"],a:[0,1],e:"時間依存性の薬剤は、分割回数を増やす、または延長投与・持続投与でMICを超える時間を長くする。1日1回にまとめる方法は濃度依存性の薬剤（アミノグリコシド系）の考え方。"},
+{c:0,q:"重症患者における抗菌薬の体内動態について正しいものはどれか。",o:["敗血症では水溶性抗菌薬の分布容積が増大しやすい","過大腎クリアランス（ARC）では腎排泄型薬剤の血中濃度が低下しやすい","低アルブミン血症では高タンパク結合薬の遊離型分率が減少する","腹水貯留があると水溶性薬の分布容積は減少する","脂溶性抗菌薬の分布容積は浮腫で大きく増加する"],a:[0,1],e:"毛細血管透過性の亢進や大量輸液で、β-ラクタム系やアミノグリコシド系など水溶性薬のVdが増える。ARCでは腎クリアランスが亢進し、通常量では不足しやすい。低アルブミン血症では遊離型が増え、クリアランスも増える。"},
+{c:0,q:"特定薬剤治療管理料の対象となるTDM対象薬はどれか。",o:["バンコマイシン","ボリコナゾール","セファゾリン","アジスロマイシン","メロペネム"],a:[0,1],e:"抗菌薬・抗真菌薬では、グリコペプチド系（バンコマイシン、テイコプラニン）、アミノグリコシド系、アルベカシン、ボリコナゾールなどがTDMの対象。"},
+{c:0,q:"経口投与時のバイオアベイラビリティがほぼ100%に近い薬剤はどれか。",o:["レボフロキサシン","リネゾリド","セフジトレン ピボキシル","バンコマイシン（経口）","セフカペン ピボキシル"],a:[0,1],e:"キノロン系、リネゾリド、メトロニダゾール、ST合剤などは経口吸収が良好で、静注からの切り替えに使いやすい。第3世代経口セフェムはバイオアベイラビリティが低い。経口バンコマイシンはほとんど吸収されない。"},
+{c:0,q:"体重60 kgの患者にゲンタマイシン5 mg/kgを1日1回投与する。1回投与量として正しいものはどれか。1つ選べ。",o:["150 mg","240 mg","300 mg","360 mg","500 mg"],a:[2],e:"5 mg/kg × 60 kg = 300 mg。肥満患者では実体重ではなく補正体重を用いることがある。投与後はピーク値とトラフ値で評価する。"},
+// 耐性菌
+{c:1,q:"MRSAの耐性機序について正しいものはどれか。",o:["mecA遺伝子が親和性の低いPBP2′（PBP2a）を産生する","セファゾリンは無効である","β-ラクタマーゼ阻害薬を併用すれば感受性に戻る","外膜の透過性低下が主な耐性機序である","バンコマイシン耐性を伴うことが多い"],a:[0,1],e:"MRSAは低親和性のPBP2′によってβ-ラクタム系薬全般に耐性を示し、β-ラクタマーゼ阻害薬でも回復しない。外膜はグラム陰性菌の構造。バンコマイシン耐性株（VRSA）はまれ。"},
+{c:1,q:"Acinetobacter baumanniiについて正しいものはどれか。",o:["乾燥した環境表面でも長期間生存する","スルバクタムが単独で抗菌活性を示す","腸内細菌目に属する","芽胞を形成する","グラム陽性球菌である"],a:[0,1],e:"ブドウ糖非発酵グラム陰性桿菌で、環境表面で長く生存し、院内伝播の原因となる。スルバクタムはβ-ラクタマーゼ阻害作用に加え、本菌への抗菌活性をもつ。カルバペネム耐性株（CRAB）が問題となっている。"},
+{c:1,q:"Stenotrophomonas maltophiliaについて正しいものはどれか。",o:["カルバペネム系薬に自然耐性を示す","ST合剤が第一選択となる","腸内細菌目に属する","アミノグリコシド系薬が第一選択となる","カルバペネム系薬の使用で検出頻度が低下する"],a:[0,1],e:"染色体性のメタロβ-ラクタマーゼ（L1）を持ち、カルバペネム系に自然耐性。カルバペネム使用後に選択されやすい。治療はST合剤が中心で、ミノサイクリンやレボフロキサシンも選択肢。"},
+{c:1,q:"腸球菌について正しいものはどれか。",o:["E. faecalisはアンピシリン感受性株が多い","E. faeciumはアンピシリン耐性株が多い","セフェム系薬が有効である","グラム陰性球菌である","VREはE. faecalisに多い"],a:[0,1],e:"腸球菌はセフェム系に自然耐性。E. faecalisはABPCが第一選択になることが多い。E. faeciumはABPC耐性が多く、バンコマイシン耐性（VRE）の多くもE. faecium。"},
+// 呼吸器・尿路
+{c:2,q:"肺炎球菌肺炎について正しいものはどれか。",o:["尿中抗原は治療後もしばらく陽性が続くことがある","ペニシリン感受性であればペニシリン系で治療できる","細胞内寄生菌である","グラム陰性双球菌である","莢膜をもたない"],a:[0,1],e:"肺炎球菌はグラム陽性双球菌で、莢膜が病原性に関わる（ワクチンの標的）。尿中抗原は数週間陽性が続くことがあり、再感染の判断には使いにくい。"},
+{c:2,q:"人工呼吸器関連肺炎（VAP）について正しいものはどれか。",o:["緑膿菌などの耐性グラム陰性桿菌を想定する","予防として頭部挙上（30〜45度）が推奨される","喀痰から検出されたカンジダは原則として治療対象である","治療期間は原則21日以上である","気管挿管後48時間以内の発症を指す"],a:[0,1],e:"VAPは挿管後48時間以降に発症した肺炎。喀痰のカンジダは多くが定着。治療期間は多くの場合7日間程度で十分とされる。"},
+{c:2,q:"急性腎盂腎炎について正しいものはどれか。",o:["抗菌薬開始前に尿培養を採取する","尿路の閉塞を伴う場合はドレナージを考慮する","ST合剤は使用できない","ホスホマイシン経口が第一選択である","治療期間は2日間で十分である"],a:[0,1],e:"閉塞性腎盂腎炎は緊急のドレナージが必要。感受性があればST合剤やキノロン系も使用でき、治療期間は薬剤により7〜14日程度。"},
+{c:2,q:"百日咳について正しいものはどれか。",o:["マクロライド系薬が第一選択である","感染症法の5類全数把握疾患である","β-ラクタム系薬が第一選択である","空気感染で伝播する","ワクチン接種歴があれば感染しない"],a:[0,1],e:"2018年から5類全数把握疾患。飛沫感染。ワクチン効果は年月とともに減弱し、成人の感染源となる。国内でもマクロライド耐性株の増加が報告されており、ST合剤が代替薬となる。"},
+// 中枢・血流・敗血症
+{c:3,q:"Sepsis-3に基づく定義について正しいものはどれか。",o:["敗血症は感染症によって重篤な臓器障害が引き起こされる状態である","敗血症性ショックでは十分な輸液後も平均血圧65 mmHg以上の維持に血管収縮薬を要し、乳酸値が2 mmol/Lを超える","SIRS基準を満たせば敗血症と定義する","qSOFAは敗血症の診断基準である","乳酸値は予後と関係しない"],a:[0,1],e:"Sepsis-3では臓器障害をSOFAスコア2点以上の上昇で評価する。qSOFAはスクリーニングに用いるもので、診断基準ではない。"},
+{c:3,q:"血液培養の解釈について正しいものはどれか。",o:["2セット中1セットのみからCNSが検出された場合はコンタミネーションを考える","黄色ブドウ球菌は1セットのみの検出でも起因菌として扱う","血液培養は1セットのみの採取が推奨される","血液培養は解熱してから採取する","Corynebacteriumは1セット陽性でも必ず起因菌である"],a:[0,1],e:"CNS、Corynebacterium、Bacillus、Cutibacteriumなど皮膚常在菌は、1セットのみの陽性ならコンタミネーションの可能性が高い。S. aureus、腸内細菌目、カンジダなどは1セットでも起因菌と考える。"},
+{c:3,q:"カテーテル関連血流感染症（CRBSI）について正しいものはどれか。",o:["S. aureusやカンジダが検出された場合はカテーテルを抜去する","血液培養はカテーテルと末梢静脈から採取する","CNSが1セット陽性なら全例が真の起因菌である","全例で抗菌薬ロック療法が第一選択である","血液培養はカテーテルからのみ採取すればよい"],a:[0,1],e:"カテーテル血と末梢血の陽性化までの時間差（DTP）が診断に役立つ。S. aureus、カンジダ、緑膿菌などでは原則として抜去する。"},
+// 皮膚・骨・腹腔
+{c:4,q:"蜂窩織炎について正しいものはどれか。",o:["主な原因菌は溶連菌と黄色ブドウ球菌である","セファゾリンやセファレキシンが選択肢となる","主な原因菌はグラム陰性桿菌である","キノロン系薬が第一選択である","両側下腿の発赤は蜂窩織炎として典型的である"],a:[0,1],e:"非化膿性蜂窩織炎では溶連菌が主体。両側性の下腿発赤はうっ滞性皮膚炎などとの鑑別が必要。"},
+{c:4,q:"糖尿病足感染症について正しいものはどれか。",o:["骨まで達するプローブテスト（probe-to-bone）が骨髄炎の評価に有用である","培養は深部組織や骨から採取することが望ましい","表面スワブの培養結果が最も信頼できる","全例で抗MRSA薬と抗緑膿菌薬の併用が必要である","血糖管理は治療成績に影響しない"],a:[0,1],e:"表面スワブは定着菌を拾いやすい。軽症例は溶連菌・黄色ブドウ球菌を標的とし、重症度や耐性菌リスクで広域化を判断する。"},
+{c:4,q:"急性胆管炎について正しいものはどれか。",o:["胆道ドレナージが治療の基本である","原因菌は大腸菌やKlebsiellaなど腸内細菌目が多い","原因菌は主に黄色ブドウ球菌である","抗菌薬のみで全例治癒する","腸球菌が関与することはない"],a:[0,1],e:"Tokyo Guidelinesでは重症度に応じた早期ドレナージと抗菌薬治療を行う。腸球菌や嫌気性菌が関与することもある。"},
+{c:4,q:"疥癬について正しいものはどれか。",o:["角化型疥癬は感染力が強く、個室管理が推奨される","イベルメクチンは体重あたりで投与量を決める","原因は細菌である","抗菌薬で治療する","角化型疥癬は通常疥癬より感染力が弱い"],a:[0,1],e:"ヒゼンダニ（ダニ）による感染症。治療はイベルメクチン内服（約200 μg/kg、空腹時）やフェノトリン外用。角化型疥癬はダニ数が非常に多く、接触予防策を徹底する。"},
+// 真菌・ウイルス・結核
+{c:5,q:"クリプトコックス髄膜炎について正しいものはどれか。",o:["導入療法はリポソーマルアムホテリシンBとフルシトシンの併用が基本である","髄液や血清のクリプトコックス抗原検査が診断に有用である","エキノキャンディン系薬が有効である","頭蓋内圧が亢進していても腰椎穿刺は禁忌である","ヒト-ヒト感染が主な感染経路である"],a:[0,1],e:"クリプトコックスはエキノキャンディン系に自然耐性。頭蓋内圧亢進には反復腰椎穿刺による排液を行う。導入後はフルコナゾールで地固め・維持療法。"},
+{c:5,q:"サイトメガロウイルス（CMV）感染症の治療薬について正しいものはどれか。",o:["ガンシクロビルは骨髄抑制に注意する","バルガンシクロビルはガンシクロビルのプロドラッグである","アシクロビルが第一選択である","ガンシクロビルは腎機能による用量調節が不要である","ホスカルネットは腎障害を起こさない"],a:[0,1],e:"ガンシクロビル・バルガンシクロビルは腎排泄型で腎機能により調節する。ホスカルネットは腎障害や電解質異常（低Ca・低Mgなど）に注意する。"},
+{c:5,q:"COVID-19の抗ウイルス薬について正しいものはどれか。",o:["ニルマトレルビル/リトナビルはCYP3A阻害による相互作用が多い","レムデシビルは点滴静注製剤である","モルヌピラビルは妊婦に推奨される","エンシトレルビルには併用禁忌薬がない","抗ウイルス薬は発症7日以降の開始が最も効果的である"],a:[0,1],e:"リトナビル、エンシトレルビルはいずれもCYP3Aを強く阻害し、併用禁忌・注意薬が多い。モルヌピラビルは催奇形性の懸念から妊婦には禁忌。抗ウイルス薬は発症早期の開始が基本。"},
+{c:5,q:"B型肝炎ウイルス（HBV）の再活性化対策について正しいものはどれか。",o:["免疫抑制療法・化学療法の前にHBs抗原を測定する","HBs抗原陰性でもHBc抗体またはHBs抗体陽性ならHBV-DNAをモニタリングする","HBs抗原陰性なら再活性化のリスクはない","リツキシマブ使用時は再活性化のリスクが低い","再活性化が起きても劇症化することはない"],a:[0,1],e:"HBs抗原陽性者には核酸アナログの予防投与を行う。既往感染者（HBc抗体・HBs抗体陽性）でもde novo肝炎を起こすことがあり、特にリツキシマブなどでリスクが高い。劇症化すると致死率が高い。"},
+{c:5,q:"白癬の治療について正しいものはどれか。",o:["テルビナフィン内服中は肝機能を定期的に確認する","爪白癬にはエフィナコナゾール外用液が用いられる","足白癬の第一選択はフルコナゾール静注である","白癬菌は酵母様真菌である","KOH直接鏡検は診断に役立たない"],a:[0,1],e:"白癬菌は皮膚糸状菌。診断はKOH直接鏡検が基本。爪白癬では内服（テルビナフィン、ホスラブコナゾール）や外用（エフィナコナゾール、ルリコナゾール）を用いる。"},
+{c:5,q:"潜在性結核感染症（LTBI）について正しいものはどれか。",o:["IGRAはBCG接種の影響を受けにくい","治療はイソニアジド6〜9か月が標準的である","ツベルクリン反応はBCG接種の影響を受けない","潜在性結核感染者は周囲に感染させる","生物学的製剤の開始後にスクリーニングすればよい"],a:[0,1],e:"LTBIは発病しておらず、他者への感染性はない。生物学的製剤などの免疫抑制療法の前にIGRAでスクリーニングする。リファンピシン4か月の治療もある。"},
+// 性感染症
+{c:6,q:"性器クラミジア感染症について正しいものはどれか。",o:["アジスロマイシン単回投与またはドキシサイクリン7日間が治療選択肢である","パートナーの検査・治療を行う","β-ラクタム系薬が第一選択である","女性は症状が強く出ることが多い","一度治療すれば再感染しない"],a:[0,1],e:"クラミジアは細胞内寄生菌でβ-ラクタム系は使わない。女性は無症状が多く、骨盤内炎症性疾患や不妊の原因となる。淋菌との重複感染に注意する。"},
+{c:6,q:"性器ヘルペスについて正しいものはどれか。",o:["頻回に再発する場合はバラシクロビルによる再発抑制療法がある","初発は再発より症状が重いことが多い","抗菌薬で治療する","一度治療すれば潜伏感染は消失する","症状がないときはウイルスを排出しない"],a:[0,1],e:"HSVは神経節に潜伏感染し、治療で排除はできない。無症候時にもウイルスを排出（無症候性排泄）することがあり、感染源となる。"},
+{c:6,q:"梅毒について正しいものはどれか。",o:["感染症法の5類全数把握疾患である","妊娠中の梅毒は先天梅毒の原因となる","ペニシリンアレルギーの場合に代替薬はない","第2期では皮疹はみられない","ベンザチンペニシリンGは国内で使用できない"],a:[0,1],e:"第2期では梅毒性バラ疹などがみられる。ペニシリンアレルギーではドキシサイクリンやミノサイクリンが代替薬。国内でも2021年からベンザチンペニシリンG筋注が使用可能になった。"},
+{c:6,q:"腟トリコモナス症について正しいものはどれか。",o:["メトロニダゾールが治療薬である","パートナーの同時治療が必要である","原因微生物は細菌である","男性は症状が強く出ることが多い","治療中の飲酒は問題ない"],a:[0,1],e:"原虫による感染症。男性は無症状のことが多く、ピンポン感染を防ぐためパートナーも同時に治療する。メトロニダゾールはジスルフィラム様作用があるため飲酒を避ける。"},
+// 相互作用・副作用・特殊集団
+{c:7,q:"QT延長に特に注意が必要な薬剤はどれか。",o:["クラリスロマイシン","レボフロキサシン","アモキシシリン","セファゾリン","ゲンタマイシン"],a:[0,1],e:"マクロライド系、キノロン系、アゾール系抗真菌薬などはQT延長を起こしうる。低K血症・低Mg血症や他のQT延長薬との併用でリスクが高まる。"},
+{c:7,q:"ワルファリンの作用を増強する（INRを上昇させる）抗微生物薬はどれか。",o:["ST合剤","フルコナゾール","リファンピシン","バンコマイシン（点滴静注）","アミカシン"],a:[0,1],e:"ST合剤とフルコナゾールはCYP2C9阻害などでワルファリンの作用を増強する。リファンピシンはCYP誘導により作用を減弱させる。"},
+{c:7,q:"ピボキシル基をもつ抗菌薬について正しいものはどれか。",o:["小児で低カルニチン血症による低血糖を起こすことがある","セフジトレン ピボキシルはピボキシル基を含む","低カルニチン血症では高血糖を起こす","成人では注意する必要がない","ピボキシル基は抗菌活性を担う部分である"],a:[0,1],e:"ピボキシル基は吸収を高めるための構造で、代謝されてピバリン酸となりカルニチンと結合して排泄される。小児での長期・反復投与で低カルニチン血症・低血糖が報告されている。成人でも注意が必要。"},
+{c:7,q:"β-ラクタム系薬のアレルギーについて正しいものはどれか。",o:["セフェム系との交差反応は側鎖の類似性が関係する","アズトレオナムとセフタジジムは同一の側鎖をもつ","ペニシリンアレルギーではカルバペネム系は全例禁忌である","ペニシリンアレルギーの申告者のほとんどは真のIgE介在性アレルギーである","ペニシリンアレルギーではセフェム系はすべて禁忌である"],a:[0,1],e:"ペニシリンアレルギーの申告者の多くは真のアレルギーではない。カルバペネム系との交差反応はまれ。アズトレオナムは他のβ-ラクタムとの交差反応が少ないが、セフタジジムとは側鎖が共通。"},
+{c:7,q:"小児への抗菌薬使用について正しいものはどれか。",o:["キノロン系ではトスフロキサシンに小児用製剤がある","テトラサイクリン系は8歳未満では原則として避ける","セフトリアキソンは高ビリルビン血症の新生児にも安全に使える","小児の投与量は体重に関係なく成人量の半量とする","アミノグリコシド系は小児ではTDMが不要である"],a:[0,1],e:"小児の投与量は原則として体重あたりで計算する。セフトリアキソンはビリルビンの置換作用があり、高ビリルビン血症の新生児には禁忌。"},
+// 適正使用・感染対策
+{c:8,q:"手術部位感染（SSI）予防の抗菌薬投与について正しいものはどれか。",o:["執刀開始前60分以内に投与を開始する","長時間手術ではセファゾリンを術中に再投与する","術後1週間は継続投与する","皮膚切開後に初回投与する","全例でカルバペネム系を用いる"],a:[0,1],e:"セファゾリンは約3〜4時間ごとに術中再投与する。バンコマイシンやキノロン系は執刀120分前からの投与開始が目安。術後の投与は多くの手術で24時間以内（心臓手術は48時間以内）とされる。"},
+{c:8,q:"de-escalationについて正しいものはどれか。",o:["培養・感受性結果に基づいて狭域の抗菌薬に変更する","不要になった併用薬を中止する","より広域の抗菌薬に変更することを指す","培養検体の提出は不要である","臨床的改善の有無にかかわらず一律に行う"],a:[0,1],e:"de-escalationは経験的治療を開始した後、原因菌と臨床経過をもとに狭域化・中止を行うこと。治療前に適切な培養を採取していることが前提となる。"},
+{c:8,q:"抗菌薬適正使用支援（AS）で抗菌薬使用量の評価に用いられる指標はどれか。",o:["DOT（days of therapy）","AUD（antimicrobial use density）","MASCCスコア","qSOFA","Child-Pughスコア"],a:[0,1],e:"AUDはDDD（規定1日投与量）をもとにした使用密度、DOTは投与日数をもとにした指標。DOTは小児や腎機能低下例の用量の影響を受けにくい。"},
+{c:8,q:"WHOが示す手指衛生の5つのタイミングに含まれるものはどれか。",o:["患者に触れる前","清潔・無菌操作の前","病棟に入る前","休憩から戻ったとき","電話を使用した後"],a:[0,1],e:"5つのタイミングは、患者に触れる前、清潔・無菌操作の前、体液に曝露された可能性のある後、患者に触れた後、患者周辺の物品に触れた後。"},
+{c:8,q:"高水準消毒薬に分類されるものはどれか。",o:["グルタラール","フタラール","消毒用エタノール","ベンザルコニウム塩化物","クロルヘキシジングルコン酸塩"],a:[0,1],e:"高水準：グルタラール、フタラール、過酢酸。中水準：次亜塩素酸ナトリウム、消毒用エタノール、ポビドンヨード。低水準：第四級アンモニウム塩（ベンザルコニウム）、クロルヘキシジン、両性界面活性剤。"},
+{c:8,q:"HBs抗原陽性血液による針刺し事故の対応について正しいものはどれか。",o:["HBs抗体陰性の受傷者にはHBIGとHBワクチンを投与する","HBIGはできるだけ早く（24時間以内を目安に）投与する","HBワクチン接種でHBs抗体陽性が確認されていても全例HBIGを投与する","HCVには曝露後に用いる有効なワクチンがある","HIV曝露後予防は1週間以内に開始すれば十分である"],a:[0,1],e:"HBs抗体陽性（10 mIU/mL以上）が確認されていれば追加対応は不要なことが多い。HCVにはワクチンも確立した曝露後予防もない。HIVの曝露後予防は可能な限り早く（2時間以内が目安）開始する。"},
+{c:8,q:"接触予防策について正しいものはどれか。",o:["患者ごとに手袋・ガウンを交換する","聴診器などの器具は患者専用にする","N95マスクの着用が必須である","陰圧個室への収容が必須である","手袋を着用すれば手指衛生は不要である"],a:[0,1],e:"MRSA、CDI、多剤耐性菌、疥癬などで実施する。手袋を外した後も手指衛生が必要。N95マスクや陰圧個室は空気予防策。"},
+{c:8,q:"水痘の院内曝露後の対応について正しいものはどれか。",o:["免疫のない曝露者には72時間以内の水痘ワクチン接種が発症予防に有効である","免疫のない曝露職員は潜伏期間中の就業制限を行う","水痘は接触感染のみで伝播する","帯状疱疹の患者からは水痘は感染しない","潜伏期間は1〜2日である"],a:[0,1],e:"水痘は空気感染・接触感染で伝播し、潜伏期間は約2週間（10〜21日）。帯状疱疹の水疱からも感染する。ワクチン接種ができない免疫不全者などには、曝露後に抗ウイルス薬の予防投与を検討する。"},
+{c:8,q:"カテーテル関連尿路感染症（CAUTI）の予防策として正しいものはどれか。",o:["不要になった尿道カテーテルを早期に抜去する","閉鎖式導尿システムを維持する","定期的に膀胱洗浄を行う","カテーテル留置中は予防的に抗菌薬を投与する","蓄尿バッグを膀胱より高い位置に置く"],a:[0,1],e:"最も有効な対策は留置の適応を見直し、早期に抜去すること。蓄尿バッグは膀胱より低く、床に付かない位置に置く。定期的な膀胱洗浄や予防的抗菌薬は推奨されない。"},
+// ===== スペクトル基礎 =====
+{c:9,q:"緑膿菌に有効な抗菌薬はどれか。1つ選べ。",o:["セフェピム","セフトリアキソン","セファゾリン","スルバクタム/アンピシリン","セフメタゾール"],a:[0],e:"抗緑膿菌活性をもつβ-ラクタムは、TAZ/PIPC、セフタジジム、セフェピム、カルバペネム（エルタペネムを除く）、アズトレオナム。「3世代のCTRXは緑膿菌に効かない、CAZは効く」がよく問われる。"},
+{c:9,q:"緑膿菌に無効な抗菌薬はどれか。1つ選べ。",o:["セフトリアキソン","タゾバクタム/ピペラシリン","セフタジジム","メロペネム","レボフロキサシン"],a:[0],e:"セフトリアキソンは肺炎球菌や腸内細菌に強いが、緑膿菌には効かない。同じ第3世代でもセフタジジムは緑膿菌に有効。"},
+{c:9,q:"MRSAに有効な抗菌薬はどれか。1つ選べ。",o:["バンコマイシン","セファゾリン","メロペネム","タゾバクタム/ピペラシリン","セフトリアキソン"],a:[0],e:"MRSAはβ-ラクタム系にほぼすべて耐性（国内で使える抗MRSA活性のあるβ-ラクタムはない）。抗MRSA薬はバンコマイシン、テイコプラニン、ダプトマイシン、リネゾリド、テジゾリド、アルベカシン。"},
+{c:9,q:"Bacteroides fragilis（横隔膜より下の嫌気性菌）に有効なものはどれか。",o:["メトロニダゾール","メロペネム","セフトリアキソン","セファゾリン","レボフロキサシン"],a:[0,1],e:"B. fragilisをカバーするのは、メトロニダゾール、カルバペネム、β-ラクタマーゼ阻害薬配合ペニシリン（SBT/ABPC、TAZ/PIPC）、セファマイシン（CMZ）。CTRXやCEZは無効。"},
+{c:9,q:"腸球菌（E. faecalis）に無効な抗菌薬はどれか。1つ選べ。",o:["セフトリアキソン","アンピシリン","バンコマイシン","リネゾリド","タゾバクタム/ピペラシリン"],a:[0],e:"腸球菌はセフェム系に自然耐性。「腸球菌にセフェムは効かない」は必須知識。E. faecalisにはアンピシリンが第一選択。"},
+{c:9,q:"非定型病原体（マイコプラズマ・レジオネラ）に有効なものはどれか。",o:["アジスロマイシン","レボフロキサシン","セフトリアキソン","スルバクタム/アンピシリン","メロペネム"],a:[0,1],e:"非定型病原体は細胞壁がない、または細胞内寄生のためβ-ラクタム系は無効。マクロライド系、テトラサイクリン系、キノロン系を使う。"},
+{c:9,q:"ESBL産生大腸菌に有効なものはどれか。",o:["メロペネム","セフメタゾール","セフトリアキソン","セファゾリン","アンピシリン"],a:[0,1],e:"ESBLはペニシリン系、第1〜4世代セフェムを分解する。セファマイシン系（CMZ）とカルバペネム系は分解されにくい。"},
+{c:9,q:"セファゾリンが主にカバーする菌はどれか。",o:["MSSA","溶連菌","緑膿菌","腸球菌","Bacteroides fragilis"],a:[0,1],e:"第1世代セフェムはグラム陽性球菌（MSSA、レンサ球菌）が得意。グラム陰性菌は大腸菌・Klebsiella・Proteus mirabilis（覚え方：PEK）の一部まで。"},
+{c:9,q:"セフトリアキソンが主にカバーする菌はどれか。",o:["肺炎球菌","大腸菌","緑膿菌","腸球菌","MRSA"],a:[0,1],e:"第3世代セフェムは肺炎球菌などのレンサ球菌と、腸内細菌目のグラム陰性桿菌に強い。緑膿菌・腸球菌・MRSA・嫌気性菌（B. fragilis）は苦手。"},
+{c:9,q:"スルバクタム/アンピシリンはカバーするが、セフトリアキソンはカバーしないものはどれか。",o:["嫌気性菌（B. fragilis）","腸球菌（E. faecalis）","緑膿菌","MRSA","マイコプラズマ"],a:[0,1],e:"SBT/ABPCは「ペニシリンなので腸球菌に効く」「阻害薬配合で嫌気性菌に効く」。誤嚥性肺炎や腹腔内感染でよく使われる理由。緑膿菌、MRSA、非定型はどちらも無効。"},
+{c:9,q:"メトロニダゾールが有効なものはどれか。1つ選べ。",o:["Clostridioides difficile","MRSA","緑膿菌","大腸菌","肺炎球菌"],a:[0],e:"メトロニダゾールは嫌気性菌（B. fragilis、C. difficileなど）と原虫（赤痢アメーバ、トリコモナス）専用。好気性菌には効かないため、腹腔内感染では他剤と併用する。"},
+{c:9,q:"アズトレオナムが有効なものはどれか。1つ選べ。",o:["緑膿菌","MSSA","肺炎球菌","腸球菌","Bacteroides fragilis"],a:[0],e:"アズトレオナムはグラム陰性菌（緑膿菌を含む）専用のモノバクタム。グラム陽性菌と嫌気性菌には効かない。β-ラクタムアレルギー時の選択肢になる。"},
+{c:9,q:"グラム陰性菌に無効で、グラム陽性菌専用の抗菌薬はどれか。1つ選べ。",o:["バンコマイシン","メロペネム","レボフロキサシン","ST合剤","ミノサイクリン"],a:[0],e:"グリコペプチド系（バンコマイシン、テイコプラニン）、ダプトマイシン、リネゾリドはグラム陽性菌専用。大きな分子は陰性菌の外膜を通過できない。"},
+{c:9,q:"セフメタゾールがカバーしないものはどれか。1つ選べ。",o:["緑膿菌","大腸菌","ESBL産生大腸菌","Bacteroides fragilis","Klebsiella pneumoniae"],a:[0],e:"セフメタゾールは「腸内細菌（ESBL含む）＋嫌気性菌」。緑膿菌と腸球菌はカバーしない。市中の腹腔内感染やESBL産生菌の尿路感染で使われる。"},
+{c:9,q:"タゾバクタム/ピペラシリンがカバーしないものはどれか。1つ選べ。",o:["MRSA","緑膿菌","Bacteroides fragilis","E. faecalis","大腸菌"],a:[0],e:"TAZ/PIPCは緑膿菌・嫌気性菌・腸球菌（E. faecalis）まで含む広域薬。MRSA、非定型病原体はカバーしない。"},
+{c:9,q:"メロペネムでもカバーできないものはどれか。",o:["MRSA","Stenotrophomonas maltophilia","緑膿菌","Bacteroides fragilis","ESBL産生大腸菌"],a:[0,1],e:"カルバペネムが効かない代表は、MRSA、E. faecium、S. maltophilia、非定型病原体、C. difficile、カルバペネマーゼ産生菌。「最広域＝なんでも効く」ではない。"},
+{c:9,q:"クリンダマイシンが有効なものはどれか。",o:["MSSA","溶連菌","大腸菌","緑膿菌","腸球菌"],a:[0,1],e:"クリンダマイシンはグラム陽性球菌と口腔内嫌気性菌が中心。グラム陰性桿菌には効かない。B. fragilisは耐性が多い。毒素産生抑制目的でA群溶連菌の重症感染に併用する。"},
+{c:9,q:"ST合剤が治療の第一選択となるものはどれか。",o:["ニューモシスチス","Stenotrophomonas maltophilia","緑膿菌","Bacteroides fragilis","腸球菌"],a:[0,1],e:"ST合剤はPCP、S. maltophilia、ノカルジアの第一選択。MSSA・一部のMRSAや大腸菌にも使える。緑膿菌と嫌気性菌には無効。"},
+{c:9,q:"セファゾリンが効くことが多いグラム陰性桿菌はどれか。1つ選べ。",o:["大腸菌","緑膿菌","Enterobacter cloacae","Serratia marcescens","Acinetobacter baumannii"],a:[0],e:"第1世代セフェムが効くグラム陰性菌はPEK（Proteus mirabilis、E. coli、Klebsiella）。EnterobacterやSerratiaは染色体性AmpCを持つため効かない。"},
+{c:9,q:"Enterobacter属など染色体性AmpC産生菌の重症感染で、第3世代セフェムの代わりに選択されるものはどれか。1つ選べ。",o:["セフェピム","セフトリアキソン","セファゾリン","アンピシリン","スルバクタム/アンピシリン"],a:[0],e:"AmpC産生菌（SPACE：Serratia、Pseudomonas、Acinetobacter、Citrobacter、Enterobacter）は第3世代セフェム治療中に耐性化しやすい。セフェピムはAmpCに比較的安定。重症例ではカルバペネムも選択肢。"},
+{c:9,q:"セフェム系の世代による違いとして正しいものはどれか。1つ選べ。",o:["世代が進むとグラム陰性菌への活性が強くなり、グラム陽性球菌への活性は弱まる傾向がある","世代が進むほど腸球菌への活性が強くなる","第1世代は緑膿菌に有効である","第3世代はすべて緑膿菌に有効である","第4世代はMRSAに有効である"],a:[0],e:"大まかに、第1世代はグラム陽性球菌、第3世代はグラム陰性菌と肺炎球菌、第4世代（CFPM）は両方に加えて緑膿菌。全世代で腸球菌とMRSAは無効。第3世代ではセフタジジムのみ緑膿菌に強い。"},
+{c:9,q:"レボフロキサシンがカバーするものはどれか。",o:["肺炎球菌","レジオネラ","MRSA","Bacteroides fragilis","Clostridioides difficile"],a:[0,1],e:"レスピラトリーキノロンは肺炎球菌と非定型病原体を同時にカバーし、緑膿菌にも有効。ただし結核の診断を遅らせる懸念や耐性化から、安易な使用は避けて温存する。"},
+// ===== 感染症別の第一選択 =====
+{c:10,q:"市中肺炎で入院。耐性菌リスクはない。肺炎球菌・インフルエンザ菌を想定した標準的な選択はどれか。1つ選べ。",o:["セフトリアキソン","バンコマイシン","メトロニダゾール","アズトレオナム","メロペネム"],a:[0],e:"入院の市中肺炎はセフトリアキソンまたはSBT/ABPCが基本。非定型病原体を疑えばマクロライド系（またはテトラサイクリン系）を併用する。"},
+{c:10,q:"市中肺炎でβ-ラクタム系に併用し、非定型病原体をカバーする目的で使うのはどれか。1つ選べ。",o:["アジスロマイシン","メトロニダゾール","バンコマイシン","セファゾリン","ゲンタマイシン"],a:[0],e:"β-ラクタム＋マクロライドで、定型菌と非定型病原体を同時にカバーする。ドキシサイクリン・ミノサイクリンも代替となる。"},
+{c:10,q:"誤嚥性肺炎（耐性菌リスクなし）で選択されることが多いのはどれか。1つ選べ。",o:["スルバクタム/アンピシリン","バンコマイシン","セフタジジム","アズトレオナム","リネゾリド"],a:[0],e:"口腔レンサ球菌と口腔内嫌気性菌をカバーするSBT/ABPCが代表的。セフトリアキソンなども使われる。"},
+{c:10,q:"院内肺炎で緑膿菌などの耐性菌リスクがある。経験的治療として適切なのはどれか。1つ選べ。",o:["タゾバクタム/ピペラシリン","セファゾリン","アモキシシリン","アジスロマイシン","クリンダマイシン"],a:[0],e:"抗緑膿菌活性のあるβ-ラクタム（TAZ/PIPC、CFPM、MEPMなど）が基本。MRSAリスクがあればバンコマイシンなどを追加し、培養結果で狭域化する。"},
+{c:10,q:"外来の肺炎球菌肺炎（ペニシリン感受性）で選択される経口薬はどれか。1つ選べ。",o:["アモキシシリン（高用量）","メトロニダゾール","バンコマイシン（経口）","ホスホマイシン","セファレキシン"],a:[0],e:"外来の市中肺炎（細菌性）はアモキシシリン高用量（±クラブラン酸）が基本。国内の肺炎球菌はマクロライド耐性が多い。"},
+{c:10,q:"閉経前女性の単純性膀胱炎で最も多い原因菌はどれか。1つ選べ。",o:["大腸菌","緑膿菌","腸球菌","黄色ブドウ球菌","Bacteroides fragilis"],a:[0],e:"単純性尿路感染症の原因菌は大腸菌が大半。若年女性ではStaphylococcus saprophyticusもみられる。複雑性では腸球菌や緑膿菌も増える。"},
+{c:10,q:"単純性膀胱炎の経口治療薬として選択肢となるものはどれか。1つ選べ。",o:["セファレキシン","メトロニダゾール","アジスロマイシン","バンコマイシン（経口）","クリンダマイシン"],a:[0],e:"第1世代セフェム（セファレキシン）、ST合剤などが選択肢。キノロン系は耐性大腸菌が多く、温存が勧められる。"},
+{c:10,q:"急性腎盂腎炎で入院。ESBLリスクはない。経験的治療として標準的なものはどれか。1つ選べ。",o:["セフトリアキソン","メトロニダゾール","バンコマイシン","クリンダマイシン","アジスロマイシン"],a:[0],e:"腸内細菌目（大腸菌など）を想定し、セフトリアキソンが標準。ESBL産生菌のリスクや重症度に応じてCMZやカルバペネムを考慮する。"},
+{c:10,q:"ESBL産生大腸菌による腎盂腎炎（軽〜中等症、全身状態安定）で選択肢となるものはどれか。1つ選べ。",o:["セフメタゾール","セフトリアキソン","セファゾリン","アンピシリン","アジスロマイシン"],a:[0],e:"ESBL産生菌にはカルバペネムが確実だが、軽〜中等症ではカルバペネム温存のためセフメタゾールが選択肢となる。"},
+{c:10,q:"尿培養からE. faecalisが検出された尿路感染症。感受性があれば第一選択となるのはどれか。1つ選べ。",o:["アンピシリン","セフトリアキソン","セファゾリン","セフメタゾール","アジスロマイシン"],a:[0],e:"腸球菌はセフェム系に自然耐性。E. faecalisはアンピシリン感受性が多い。"},
+{c:10,q:"蜂窩織炎で入院（MRSAリスクなし）。第一選択となるのはどれか。1つ選べ。",o:["セファゾリン","メロペネム","レボフロキサシン","アズトレオナム","メトロニダゾール"],a:[0],e:"溶連菌と黄色ブドウ球菌（MSSA）を狙ってセファゾリン。経口ならセファレキシン。"},
+{c:10,q:"成人（50歳未満、免疫正常）の細菌性髄膜炎の経験的治療はどれか。1つ選べ。",o:["セフトリアキソン＋バンコマイシン","セファゾリン単剤","アジスロマイシン＋メトロニダゾール","クリンダマイシン単剤","レボフロキサシン単剤"],a:[0],e:"耐性肺炎球菌も想定し、CTRX＋VCMとデキサメタゾンで開始する。50歳以上や免疫不全では、リステリアを想定してアンピシリンを追加する。"},
+{c:10,q:"市中発症の腹腔内感染症（軽〜中等症）で選択肢となるのはどれか。1つ選べ。",o:["セフメタゾール","セファゾリン","アジスロマイシン","バンコマイシン","セフタジジム単剤"],a:[0],e:"腸内細菌目と嫌気性菌（B. fragilis）を同時にカバーする必要がある。CMZ、SBT/ABPC、またはCTRX＋メトロニダゾールなど。感染源のコントロール（ドレナージ・手術）も必須。"},
+{c:10,q:"MSSA菌血症の第一選択はどれか。1つ選べ。",o:["セファゾリン","バンコマイシン","レボフロキサシン","ミノサイクリン","アジスロマイシン"],a:[0],e:"MSSAにはバンコマイシンよりβ-ラクタム（セファゾリンなど）の方が治療成績が良い。感受性判明後は速やかに切り替える。"},
+{c:10,q:"MRSA菌血症で第一選択となるのはどれか。1つ選べ。",o:["バンコマイシン","セファゾリン","メロペネム","タゾバクタム/ピペラシリン","クリンダマイシン"],a:[0],e:"バンコマイシンまたはダプトマイシンが第一選択。リネゾリドは静菌的で、菌血症の第一選択にはならない。"},
+{c:10,q:"Clostridioides difficile感染症（初発・非重症）で用いられるのはどれか。1つ選べ。",o:["バンコマイシン（経口）","バンコマイシン（点滴静注）","セフトリアキソン","レボフロキサシン","クリンダマイシン"],a:[0],e:"経口バンコマイシンまたはフィダキソマイシン（非重症例ではメトロニダゾールも選択肢）。点滴静注のバンコマイシンは腸管内に移行しない。"},
+{c:10,q:"発熱性好中球減少症の初期治療として適切なのはどれか。1つ選べ。",o:["セフェピム","セファゾリン","セフトリアキソン","アジスロマイシン","バンコマイシン単剤"],a:[0],e:"緑膿菌をカバーするβ-ラクタム単剤（CFPM、TAZ/PIPC、MEPMなど）。必要時に抗MRSA薬を追加する。"},
+{c:10,q:"A群溶連菌による咽頭炎の第一選択はどれか。1つ選べ。",o:["アモキシシリン","レボフロキサシン","メトロニダゾール","バンコマイシン","セフタジジム"],a:[0],e:"アモキシシリン10日間が基本。伝染性単核球症ではアモキシシリンで皮疹が出やすいため鑑別に注意する。"},
+{c:10,q:"A群溶連菌による壊死性筋膜炎（菌確定後）の抗菌薬治療はどれか。1つ選べ。",o:["ペニシリンG＋クリンダマイシン","バンコマイシン単剤","アズトレオナム","レボフロキサシン単剤","セフメタゾール"],a:[0],e:"ペニシリンGで殺菌し、クリンダマイシンで毒素産生を抑える。外科的デブリドマンが最も重要。"},
+{c:10,q:"犬咬傷の予防・治療で用いる経口薬として適切なのはどれか。1つ選べ。",o:["アモキシシリン/クラブラン酸","セファレキシン","クリンダマイシン","メトロニダゾール","バンコマイシン（経口）"],a:[0],e:"Pasteurella、口腔内嫌気性菌、ブドウ球菌などをまとめてカバーできる。セファレキシンやクリンダマイシン単剤はPasteurellaに弱い。"},
+{c:10,q:"淋菌感染症の第一選択はどれか。1つ選べ。",o:["セフトリアキソン","レボフロキサシン","セファゾリン","アモキシシリン","メトロニダゾール"],a:[0],e:"国内の淋菌はキノロン耐性が多く、セフトリアキソン1 g単回静注が基本。クラミジアの合併を考慮する。"},
+{c:10,q:"梅毒の第一選択はどれか。1つ選べ。",o:["ペニシリン系（ベンザチンペニシリンG筋注、アモキシシリン内服など）","レボフロキサシン","メトロニダゾール","クリンダマイシン","バンコマイシン"],a:[0],e:"梅毒トレポネーマに対するペニシリン耐性は報告されていない。アレルギー時はドキシサイクリン・ミノサイクリン。"},
+{c:10,q:"成人のマイコプラズマ肺炎でまず選択される抗菌薬はどれか。1つ選べ。",o:["アジスロマイシン","セフトリアキソン","スルバクタム/アンピシリン","メロペネム","バンコマイシン"],a:[0],e:"マクロライド系が第一選択。効果がなければマクロライド耐性を考え、テトラサイクリン系やキノロン系に変更する。"},
+{c:10,q:"レジオネラ肺炎の治療に用いるのはどれか。1つ選べ。",o:["レボフロキサシン","セフトリアキソン","スルバクタム/アンピシリン","セファゾリン","バンコマイシン"],a:[0],e:"細胞内寄生菌でβ-ラクタム系は無効。キノロン系またはマクロライド系（アジスロマイシン）を用いる。"},
+{c:10,q:"カンジダ血症の初期治療（重症・アゾール耐性リスクあり）として推奨されるのはどれか。1つ選べ。",o:["ミカファンギン","バンコマイシン","メトロニダゾール","アシクロビル","ST合剤"],a:[0],e:"エキノキャンディン系が初期治療の第一選択。菌種と感受性が判明し状態が安定すればフルコナゾールへ切り替える。"}
+];
+Q.forEach((q,i)=>q.id=i+1);
+
+const KEY="abx-sukima-v1";
+let store={h:{},d:{}};
+try{const s=localStorage.getItem(KEY);if(s)store=Object.assign({h:{},d:{}},JSON.parse(s));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+function today(){const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
+const $=id=>document.getElementById(id);
+const L="abcde";
+
+function isWeak(id){const h=store.h[id];return h&&h.last===0;}
+function weakList(){return Q.filter(q=>isWeak(q.id));}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function weightedPick(pool,n){
+  const items=pool.map(q=>{const h=store.h[q.id];let w=1;if(!h)w=3;else if(h.last===0)w=4;else w=1+(h.t-h.c)/Math.max(h.t,1)*2;return{q,k:Math.pow(Math.random(),1/w)};});
+  return items.sort((a,b)=>b.k-a.k).slice(0,n).map(x=>x.q);
+}
+
+function renderHome(){
+  const vals=Object.values(store.h);
+  const t=vals.reduce((s,h)=>s+h.t,0),c=vals.reduce((s,h)=>s+h.c,0);
+  $("sToday").textContent=store.d[today()]||0;
+  $("sAcc").textContent=t?Math.round(c/t*100)+"%":"–";
+  $("sSeen").textContent=vals.length;$("sTotal").textContent=Q.length;
+  const w=weakList().length;$("weakN").textContent=w?w+"問":"なし";$("goWeak").disabled=!w;
+  $("cats").innerHTML=CATS.map((name,ci)=>{
+    const qs=Q.filter(q=>q.c===ci);let tt=0,cc=0,seen=0;
+    qs.forEach(q=>{const h=store.h[q.id];if(h){tt+=h.t;cc+=h.c;seen++;}});
+    const acc=tt?Math.round(cc/tt*100):null;
+    return `<button class="cat" data-c="${ci}"><span class="nm">${name}</span><span class="ct mono">${acc===null?"未着手":acc+"%"} · ${seen}/${qs.length}</span><span class="bar"><i style="width:${acc||0}%"></i></span></button>`;
+  }).join("");
+  document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>start(shuffle(Q.filter(q=>q.c===+b.dataset.c)).slice(0,10)));
+}
+
+let S=null;
+function show(v){["home","quiz","result","ref"].forEach(x=>$(x).hidden=x!==v);$("dock").hidden=v!=="quiz";window.scrollTo(0,0);}
+function start(list){if(!list.length)return;S={list,i:0,res:[]};show("quiz");renderQ();}
+
+function renderQ(){
+  const q=S.list[S.i];S.sel=new Set();S.done=false;
+  S.order=shuffle(q.o.map((_,k)=>k));
+  $("progTxt").textContent=(S.i+1)+"/"+S.list.length;
+  $("progBar").style.width=(S.i/S.list.length*100)+"%";
+  $("qTag").innerHTML=`<span class="mono">Q.${String(q.id).padStart(3,"0")}</span>${CATS[q.c]}`;
+  $("qText").textContent=q.q;
+  $("qReq").innerHTML=q.a.length>1?`正しいものを<b>${q.a.length}つ</b>選んでください`:`<b>1つ</b>選んでください`;
+  $("opts").innerHTML=S.order.map((k,pos)=>`<button class="opt" data-k="${k}"><span class="lt">${L[pos]}</span><span>${q.o[k]}</span><span class="mk"></span></button>`).join("");
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>toggle(b));
+  $("fb").hidden=true;
+  $("goBtn").textContent="回答する";updateGo();
+}
+function toggle(b){
+  if(S.done)return;const q=S.list[S.i],k=+b.dataset.k;
+  if(S.sel.has(k))S.sel.delete(k);
+  else{if(q.a.length===1)S.sel.clear();else if(S.sel.size>=q.a.length)return;S.sel.add(k);}
+  document.querySelectorAll(".opt").forEach(o=>o.classList.toggle("sel",S.sel.has(+o.dataset.k)));
+  updateGo();
+}
+function updateGo(){const q=S.list[S.i];$("goBtn").disabled=!S.done&&S.sel.size!==q.a.length;}
+
+function answer(){
+  const q=S.list[S.i];S.done=true;
+  const ok=q.a.length===S.sel.size&&q.a.every(k=>S.sel.has(k));
+  document.querySelectorAll(".opt").forEach(o=>{
+    const k=+o.dataset.k;o.disabled=true;o.classList.remove("sel");
+    if(q.a.includes(k)){o.classList.add("right");o.querySelector(".mk").textContent="○";}
+    else if(S.sel.has(k)){o.classList.add("wrong");o.querySelector(".mk").textContent="×";}
+  });
+  const letters=S.order.map((k,p)=>q.a.includes(k)?L[p]:null).filter(Boolean).join("・");
+  $("fb").innerHTML=`<div class="v ${ok?"ok":"ng"}">${ok?"正解":"不正解"}　<span class="mono" style="font-size:.85rem;color:var(--muted)">正答 ${letters}</span></div><p>${q.e}</p>`;
+  $("fb").hidden=false;
+  const h=store.h[q.id]||{t:0,c:0,last:null};h.t++;if(ok)h.c++;h.last=ok?1:0;store.h[q.id]=h;
+  const d=today();store.d={[d]:(store.d[d]||0)+1};save();
+  S.res.push({q,ok});
+  $("goBtn").textContent=S.i+1<S.list.length?"次の問題へ":"結果を見る";updateGo();
+  $("fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function next(){if(S.i+1<S.list.length){S.i++;renderQ();window.scrollTo(0,0);}else finish();}
+function finish(){
+  const n=S.res.filter(r=>r.ok).length,tot=S.res.length;
+  $("rScore").textContent=n;$("rOf").textContent="/ "+tot+" 問正解";
+  const r=n/tot;$("rMsg").textContent=r===1?"全問正解。この調子で次の領域へ。":r>=.6?"間違えた問題は「苦手復習」に入っています。":"解説を読み直してから、間違いを復習しましょう。";
+  $("rList").innerHTML=S.res.map(x=>`<li><span class="${x.ok?"ok":"ng"}">${x.ok?"○":"×"}</span><span>${x.q.q}<small>${CATS[x.q.c]}</small></span></li>`).join("");
+  $("rWeak").disabled=!S.res.some(x=>!x.ok);
+  show("result");
+}
+
+$("goBtn").onclick=()=>S.done?next():answer();
+$("go5").onclick=()=>start(weightedPick(Q,5));
+$("go10").onclick=()=>start(weightedPick(Q,10));
+$("goWeak").onclick=()=>start(shuffle(weakList()).slice(0,10));
+$("quit").onclick=()=>{S.res.length?finish():(renderHome(),show("home"));};
+$("rAgain").onclick=()=>start(weightedPick(Q,5));
+$("rWeak").onclick=()=>start(shuffle(S.res.filter(x=>!x.ok).map(x=>x.q)));
+$("rHome").onclick=()=>{renderHome();show("home");};
+
+/* ===== スペクトル早見表 ===== */
+const COLS=["MSSA","MRSA","レンサ球菌・肺炎球菌","腸球菌 E. faecalis","大腸菌など腸内細菌","ESBL産生菌","緑膿菌","嫌気性菌 B. fragilis","非定型 マイコ・レジオ"];
+const SPEC=[
+ ["ペニシリン系"],
+ ["ペニシリンG","PCG","xxotxxxxx"],
+ ["アンピシリン","ABPC・経口AMPC","xxootxxxx"],
+ ["スルバクタム/アンピシリン","SBT/ABPC・経口AMPC/CVA","oxootxxox"],
+ ["タゾバクタム/ピペラシリン","TAZ/PIPC","oxoootoox"],
+ ["セフェム系"],
+ ["セファゾリン（第1世代）","CEZ・経口CEX","oxoxtxxxx"],
+ ["セフメタゾール（セファマイシン）","CMZ","txtxooxox"],
+ ["セフトリアキソン（第3世代）","CTRX","txoxoxxxx"],
+ ["セフタジジム（第3世代）","CAZ","xxtxoxoxx"],
+ ["セフェピム（第4世代）","CFPM","oxoxoxoxx"],
+ ["カルバペネム・モノバクタム"],
+ ["メロペネム","MEPM","oxotoooox"],
+ ["アズトレオナム","AZT","xxxxoxoxx"],
+ ["その他"],
+ ["レボフロキサシン","LVFX","txotttoxo"],
+ ["アジスロマイシン","AZM","txtxxxxxo"],
+ ["ミノサイクリン","MINO","ottxtxxxo"],
+ ["クリンダマイシン","CLDM","otoxxxxtx"],
+ ["メトロニダゾール","MNZ","xxxxxxxox"],
+ ["ST合剤","SMX/TMP","ottxttxxx"],
+ ["アミノグリコシド","GM・AMK（単独では陽性菌に使わない）","txxtotoxx"],
+ ["抗MRSA薬"],
+ ["バンコマイシン","VCM","ooooxxxxx"],
+ ["リネゾリド・ダプトマイシン","LZD・DAP（VREにも）","ooooxxxxx"]
+];
+const MK={o:["○","mo"],t:["△","mt"],x:["×","mx"]};
+const INF=[
+ ["市中肺炎（外来）","肺炎球菌、インフルエンザ菌、モラクセラ、非定型","アモキシシリン高用量（±クラブラン酸）","非定型を疑えばマクロライドまたはドキシサイクリン。キノロンは温存。"],
+ ["市中肺炎（入院）","肺炎球菌、インフルエンザ菌、非定型","セフトリアキソン or SBT/ABPC ±アジスロマイシン","レジオネラを疑えば尿中抗原を確認し、キノロンかマクロライド。"],
+ ["誤嚥性肺炎","口腔レンサ球菌、口腔内嫌気性菌","SBT/ABPC","耐性菌リスクがなければ緑膿菌カバーは不要。"],
+ ["院内肺炎・VAP","緑膿菌、腸内細菌、MRSA","TAZ/PIPC or CFPM or MEPM（±VCM）","MRSAリスクで抗MRSA薬を追加。培養で狭域化。"],
+ ["単純性膀胱炎","大腸菌","セファレキシン or ST合剤","キノロンは耐性大腸菌が多い。"],
+ ["急性腎盂腎炎","大腸菌などの腸内細菌","セフトリアキソン","ESBLリスクならCMZ、重症ならカルバペネム。閉塞はドレナージ。"],
+ ["腸球菌の尿路感染","E. faecalis","アンピシリン","セフェムは腸球菌に無効。"],
+ ["蜂窩織炎","溶連菌、MSSA","セファゾリン（経口ならセファレキシン）","MRSAリスクでバンコマイシン。"],
+ ["壊死性筋膜炎（A群溶連菌）","A群溶連菌","ペニシリンG＋クリンダマイシン","デブリドマンが最優先。CLDMは毒素抑制。"],
+ ["犬・猫咬傷","Pasteurella、嫌気性菌、ブドウ球菌","アモキシシリン/クラブラン酸","静注ならSBT/ABPC。"],
+ ["細菌性髄膜炎（成人）","肺炎球菌、髄膜炎菌（高齢でリステリア）","セフトリアキソン＋バンコマイシン（50歳以上でABPC追加）","デキサメタゾンを抗菌薬前か同時に。"],
+ ["腹腔内感染（市中）","腸内細菌、B. fragilis","セフメタゾール or SBT/ABPC（or CTRX＋MNZ）","感染源コントロールが基本。"],
+ ["胆管炎","腸内細菌、腸球菌、嫌気性菌","SBT/ABPC or CMZ（重症はTAZ/PIPCなど）","胆道ドレナージが基本。"],
+ ["MSSA菌血症","MSSA","セファゾリン","VCMよりβ-ラクタムが優れる。心エコー・血培陰性化確認。"],
+ ["MRSA菌血症","MRSA","バンコマイシン or ダプトマイシン","VCMはAUCで投与設計。"],
+ ["CDI（初発）","C. difficile","バンコマイシン経口 or フィダキソマイシン","VCM点滴は無効。"],
+ ["発熱性好中球減少症","緑膿菌を含むグラム陰性桿菌","セフェピム or TAZ/PIPC or MEPM","状況により抗MRSA薬を追加。"],
+ ["A群溶連菌咽頭炎","A群溶連菌","アモキシシリン10日間","伝染性単核球症ではAMPCで皮疹。"],
+ ["マイコプラズマ肺炎","M. pneumoniae","アジスロマイシン","無効ならテトラサイクリン系・キノロン系。"],
+ ["淋菌感染症","N. gonorrhoeae","セフトリアキソン1 g単回","クラミジア合併に注意。"],
+ ["クラミジア感染症","C. trachomatis","アジスロマイシン or ドキシサイクリン","β-ラクタムは無効。パートナーも治療。"],
+ ["梅毒","T. pallidum","ベンザチンペニシリンG筋注 or AMPC内服","アレルギー時はドキシサイクリン・ミノサイクリン。"],
+ ["カンジダ血症","Candida属","ミカファンギン（エキノキャンディン）","CVC抜去、眼科診察。安定後FLCZへ。"]
+];
+function renderSpec(){
+  const mask=$("maskChk").checked;
+  let h='<thead><tr><th>抗菌薬</th>'+COLS.map(c=>`<th>${c.replace(" ","<br>")}</th>`).join("")+"</tr></thead><tbody>";
+  SPEC.forEach(r=>{
+    if(r.length===1){h+=`<tr class="grp"><th colspan="${COLS.length+1}">${r[0]}</th></tr>`;return;}
+    h+=`<tr><th>${r[0]}<small>${r[1]}</small></th>`+r[2].split("").map(m=>`<td class="c ${MK[m][1]}${mask?" masked":""}">${MK[m][0]}</td>`).join("")+"</tr>";
+  });
+  $("specT").innerHTML=h+"</tbody>";
+}
+function renderInf(){
+  const mask=$("maskInf").checked;
+  $("infList").innerHTML=INF.map(r=>`<div class="inf-card${mask?" hide":""}"><h3>${r[0]}</h3><div><span class="k">主な原因菌</span>${r[1]}</div><div class="rx"><span class="k">選択</span><span>${r[2]}</span></div><div class="pt">${r[3]}</div></div>`).join("");
+}
+$("specT").addEventListener("click",e=>{const td=e.target.closest("td.masked");if(td)td.classList.remove("masked");});
+$("infList").addEventListener("click",e=>{const c=e.target.closest(".inf-card.hide");if(c)c.classList.remove("hide");});
+$("maskChk").onchange=renderSpec;$("maskInf").onchange=renderInf;
+function tab(which){const s=which==="spec";$("tabSpec").classList.toggle("on",s);$("tabInf").classList.toggle("on",!s);$("pSpec").hidden=!s;$("pInf").hidden=s;}
+$("tabSpec").onclick=()=>tab("spec");$("tabInf").onclick=()=>tab("inf");
+$("goRef").onclick=()=>{renderSpec();renderInf();show("ref");};
+$("refBack").onclick=()=>{renderHome();show("home");};
+$("goSpec").onclick=()=>start(weightedPick(Q.filter(q=>q.c>=9),5));
+$("resetBtn").onclick=()=>$("resetBox").hidden=false;
+$("resetNo").onclick=()=>$("resetBox").hidden=true;
+$("resetYes").onclick=()=>{store={h:{},d:{}};save();$("resetBox").hidden=true;renderHome();};
+renderHome();
+
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+</script>
+
+</body>
+</html>
